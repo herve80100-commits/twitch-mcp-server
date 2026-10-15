@@ -7,8 +7,30 @@
 import http from "node:http";
 import crypto from "node:crypto";
 import { exec } from "node:child_process";
+import fs from "node:fs";
+import readline from "node:readline/promises";
 import { loadConfig, SCOPES } from "./config.js";
 import { exchangeCode, validate, writeTokens } from "./auth.js";
+
+// Demande les identifiants manquants et les enregistre dans .env.
+const ask = readline.createInterface({ input: process.stdin, output: process.stdout });
+const fields: [string, string][] = [
+  ["TWITCH_CLIENT_ID", "Collez l'ID client de votre application Twitch : "],
+  ["TWITCH_CLIENT_SECRET", "Collez le secret client : "],
+  ["TWITCH_CHANNEL", "Nom de votre chaîne Twitch : "],
+];
+let saved = false;
+for (const [name, question] of fields) {
+  const current = process.env[name]?.trim();
+  if (current && current !== "..." && !current.startsWith("votre")) continue;
+  process.env[name] = (await ask.question(question)).trim();
+  saved = true;
+}
+ask.close();
+if (saved) {
+  fs.writeFileSync(".env", fields.map(([n]) => `${n}=${process.env[n] ?? ""}`).join("\n") + "\n");
+  console.log("Identifiants enregistrés dans .env");
+}
 
 const config = loadConfig();
 const redirectUri = `http://localhost:${config.authPort}`;
