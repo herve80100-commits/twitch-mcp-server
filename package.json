@@ -1,0 +1,30 @@
+{
+  "name": "twitch-mcp-server",
+  "version": "0.1.0",
+  "description": "Serveur MCP pour connecter Claude à Twitch (chat, stream, followers, clips, modération, EventSub)",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "auth": "node --env-file-if-exists=.env dist/cli-auth.js",
+    "dev": "tsc --watch"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "ws": "^8.22.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "@types/ws": "^8.18.2",
+    "typescript": "^7.0.2"
+  },
+  "type": "module",
+  "bin": {
+    "twitch-mcp-server": "dist/index.js"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
